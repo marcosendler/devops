@@ -11,7 +11,7 @@ LOGPATH=$(realpath "bookstack_install_$(date +%s).log")
 SCRIPT_USER="${SUDO_USER:-$USER}"
 
 # Get the current machine IP address
-CURRENT_IP=$(ip addr | grep 'state UP' -A4 | grep 'inet ' | awk '{print $2}' | cut -f1  -d'/')
+CURRENT_IP=$(ip addr | grep 'state UP' -A4 | grep 'inet ' | awk '{print $2}' | cut -f1 -d'/')
 
 # Generate a password for the database
 DB_PASS="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)"
@@ -46,10 +46,10 @@ function run_pre_install_checks() {
     error_out "This script must be ran with root/sudo privileges"
   fi
 
-  # Check if Apache appears to be installed and exit if so
+  # Check if Nginx appears to be installed and exit if so
   if [ -d "/etc/nginx/sites-enabled" ]
   then
-    error_out "This script is intended for a fresh server install, existing apache config found, aborting install"
+    error_out "This script is intended for a fresh server install, existing nginx config found, aborting install"
   fi
 
   # Check if MySQL appears to be installed and exit if so
@@ -58,7 +58,6 @@ function run_pre_install_checks() {
     error_out "This script is intended for a fresh server install, existing MySQL data found, aborting install"
   fi
 }
-
 
 # Fetch domain to use from first provided parameter,
 # Otherwise request the user to input their domain
@@ -81,14 +80,14 @@ function run_prompt_for_domain_if_required() {
 # Install core system packages
 function run_package_installs() {
   apt update
-  apt install -y git unzip nginx curl mysql-server-8.0 php8.3 nano \
+  apt install -y git unzip nginx curl mysql-server php8.3 nano \
   php8.3-fpm php8.3-curl php8.3-mbstring php8.3-ldap php8.3-xml php8.3-zip php8.3-gd php8.3-mysql
 }
 
 # Set up database
 function run_database_setup() {
   # Ensure database service has started
-  systemctl start mysql-server.service
+  systemctl start mysql.service
   sleep 3
 
   # Create the required user database, user and permissions in the database
@@ -207,11 +206,10 @@ EOL
   systemctl start php8.3-fpm.service
 }
 
-
 info_msg "This script logs full output to $LOGPATH which may help upon issues."
 sleep 1
 
-#run_pre_install_checks
+run_pre_install_checks
 run_prompt_for_domain_if_required
 info_msg ""
 info_msg "Installing using the domain or IP \"$DOMAIN\""
