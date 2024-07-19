@@ -100,7 +100,7 @@ function run_database_setup() {
 # Download BookStack
 function run_bookstack_download() {
   cd /var/www || exit
-  git clone https://github.com/BookStackApp/BookStack.git --branch release --single-branch
+  git clone https://github.com/BookStackApp/BookStack.git --branch release --single-branch bookstack
 }
 
 # Install composer
@@ -195,16 +195,16 @@ server {
 EOL
 
   # Create a symbolic link to enable the BookStack site
-  sudo ln -s /etc/nginx/sites-available/bookstack /etc/nginx/sites-enabled/
+  ln -s /etc/nginx/sites-available/bookstack /etc/nginx/sites-enabled/
 
   # Remove the default nginx site if it exists
-  sudo rm /etc/nginx/sites-enabled/default
+  rm /etc/nginx/sites-enabled/default
 
   # Restart nginx to load new config
-  sudo systemctl restart nginx
+  systemctl restart nginx
 
   # Ensure php-fpm service has started
-  sudo systemctl start php8.3-fpm.service
+  systemctl start php8.3-fpm.service
 }
 
 
