@@ -43,13 +43,13 @@ function run_pre_install_checks() {
   # Check we're running as root and exit if not
   if [[ $EUID -gt 0 ]]
   then
-    error_out "This script must be run with root/sudo privileges"
+    error_out "This script must be ran with root/sudo privileges"
   fi
 
-  # Check if Nginx appears to be installed and exit if so
+  # Check if Apache appears to be installed and exit if so
   if [ -d "/etc/nginx/sites-enabled" ]
   then
-    error_out "This script is intended for a fresh server install, existing nginx config found, aborting install"
+    error_out "This script is intended for a fresh server install, existing apache config found, aborting install"
   fi
 
   # Check if MySQL appears to be installed and exit if so
